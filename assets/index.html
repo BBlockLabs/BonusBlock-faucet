@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>Cosmos SDK Blockchain Faucet</title>
+    <link rel="icon" href="https://ping.pub/favicon.ico" />
+
+    <meta name=”robots” content="index, follow">
+    <meta name="description" content="Faucet for bonus block chain">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/element-plus/dist/index.css"/>
+
+    <script src="https://www.google.com/recaptcha/api.js?render=6LcTNM4jAAAAAGMyHdDQRQ3LjN_zVpKafoYIV6eK"></script>
+    <script src="//cdn.jsdelivr.net/npm/vue@3"></script>
+    <script src="//cdn.jsdelivr.net/npm/element-plus"></script>
+  </head>
+
+  <body>
+    <el-container id="app">
+      <el-main>
+        <el-space fill>
+          <el-row justify="center"> 
+            <el-col :span=-1>
+              <img src="/logo.svg" alt="Bonus block Faucet">
+            </el-col>
+          </el-row>
+
+          <el-row justify="center">
+            <el-col :span=-1>
+              <h1>Bonus block Faucet</h1>
+            </el-col>          
+          </el-row>
+
+          <el-row justify="center">
+            <el-col :span=-1>
+              Welcome to our testnet! Are you looking for some tokens to start? 
+            </el-col>
+          </el-row>
+
+          <el-row>
+            <el-col>
+              <el-form v-loading="loading" @submit.prevent="requestToken">
+                <el-form-item :error="error">
+                  <el-input 
+                    placeholder="Input a wallet address to request token"
+                    v-model="address"
+                  >
+                    <template #append>
+                      <el-button 
+                        type="primary"
+                        @click="requestToken"
+                      >
+                        Send
+                      </el-button>
+                    </template>
+                  </el-input>
+                </el-form-item>
+              </el-form>
+            </el-col>
+          </el-row>
+
+          <el-row v-if="response && responseType === 'info'">
+            <el-col>
+              <el-alert 
+                title="Wallet"
+                type="info"
+                :closable="false"
+              >
+                You can check your wallet balance at: 
+                <a 
+                  :href="`https://bonusblock-testnet.alter.network/rest/bank/balances/${address}`" 
+                  target="__blank"
+                >
+                  https://bonusblock-testnet.alter.network/rest/bank/balances/{{ address }}
+                </a>
+              </el-alert>
+            </el-col>
+          </el-row>
+
+          <el-row v-if="response">
+            <el-col>
+              <el-alert 
+                title="Response" 
+                :type="responseType"
+                :closable="false"
+              >
+                <pre>{{ response }}</pre>
+              </el-alert>
+            </el-col>
+          </el-row>
+        </el-space>
+      </el-main>
+    </el-container>
+
+    <script>
+      const app = Vue.createApp({
+        data() {
+          return {
+            address: '',
+            error: null,
+            response: null,
+            responseType: null,
+            loading: false,
+          }
+        },
+        methods: {
+          requestToken() {
+            this.error = null;
+            this.response = null;
+            this.loading = true;
+
+            if (!this.address) {
+              this.error = 'Address is required';
+              this.loading = false;
+            }
+
+            return this.getRecapcha()
+              .then(this.requestTokenRequest)
+              .then(data => {
+                this.response = data;
+                this.responseType = data.result.code !== 0 ? 'error' : 'info';
+
+                if (this.responseType !== 'error') {
+                  ElementPlus.ElMessage({
+                    message: 'Tokens sent successfully.',
+                    type: 'success',
+                  });
+                }
+
+                return data;
+              }).catch((err) => {
+                console.error(err);
+              }).then(() => {
+                this.loading = false;
+              });
+          },
+          getRecapcha() {
+            return grecaptcha.execute('6LcTNM4jAAAAAGMyHdDQRQ3LjN_zVpKafoYIV6eK', {
+              action: 'submit'
+            });
+          },
+          requestTokenRequest(recaptcha) {
+            return fetch(
+              `/send/${this.address}`, 
+              {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({recaptcha: recaptcha})
+              }
+            ).then(response => response.json());
+          }
+        }
+      });
+
+      app.use(ElementPlus);
+
+      app.mount('#app');
+    </script>
+  </body>
+</html>

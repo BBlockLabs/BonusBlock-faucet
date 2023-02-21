@@ -1,0 +1,22 @@
+{
+  "name": "Bonus block faucet",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Faucet for Bonus block",
+  "main": "main.js",
+  "scripts": {
+    "start": "node --experimental-modules --es-module-specifier-resolution=node main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Imants Kaupužs",
+  "license": "MIT",
+  "dependencies": {
+    "@cosmjs/crypto": "^0.29.4",
+    "@cosmjs/proto-signing": "^0.29.4",
+    "@cosmjs/stargate": "^0.29.4",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "level": "^8.0.0",
+    "nodemodule": "^0.3.0"
+  }
+}
