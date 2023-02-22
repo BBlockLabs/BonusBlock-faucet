@@ -18,5 +18,11 @@
     "express": "^4.18.2",
     "level": "^8.0.0",
     "nodemodule": "^0.3.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.34.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-vue": "^9.9.0"
   }
 }
