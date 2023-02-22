@@ -1,9 +1,9 @@
 import { Level } from 'level';
 import https from 'https';
 
-const WINDOW = 86400 * 1000 // milliseconds in a day
+const WINDOW = 24 * 60 * 60 * 1000 // milliseconds in a day
 
-export default class FrequencyChecker {
+export default class Checker {
   constructor() {
     this.db = new Level(process.env.DB_PATH, { valueEncoding: 'json' });
   }
