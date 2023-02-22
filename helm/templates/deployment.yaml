@@ -37,3 +37,7 @@ spec:
           ['source /vault/secrets/config && node --es-module-specifier-resolution=node main.js']
         env:
           {{- toYaml .Values.extraEnv | nindent 10 }}
+      ports:
+      - name: http
+        containerPort: 8000
+        protocol: TCP
