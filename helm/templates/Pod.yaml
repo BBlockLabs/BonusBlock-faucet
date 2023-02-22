@@ -1,6 +1,10 @@
 apiVersion: v1
 kind: Pod
 metadata:
+  {{- with .Values.podAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   name: {{ .Chart.Name }}
   labels:
     app.kubernetes.io/name: {{ .Chart.Name }}
@@ -9,5 +13,9 @@ spec:
   containers:
   - name: {{ .Chart.Name }}
     image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+    command:
+      ['sh', '-c']
+    args:
+      ['source /vault/secrets/config && node --es-module-specifier-resolution=node main.js']
     env:
       {{- toYaml .Values.extraEnv | nindent 6 }}

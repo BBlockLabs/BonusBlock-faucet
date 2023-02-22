@@ -9,7 +9,6 @@ spec:
   ports:
     - name: http
       port: 8000
+      targetPort: http
   selector:
     {{- include "bonusblock-faucet.selectorLabels" . | nindent 4 }}
-  type: ExternalName
-  externalName: {{ .Values.service.externalName }}
