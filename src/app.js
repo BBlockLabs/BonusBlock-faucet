@@ -20,9 +20,9 @@ const transactionSender = new TransactionSender(
   process.env.SENDER_PREFIX,
   process.env.RPC_ENDPOINT,
   process.env.TX_DENOM,
-  process.env.TX_AMMOUNT,
+  process.env.TX_AMOUNT,
   process.env.FEE_DENOM,
-  process.env.FEE_AMMOUNT,
+  process.env.FEE_AMOUNT,
   process.env.FEE_GAS,
 );
 

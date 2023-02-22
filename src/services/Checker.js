@@ -2,6 +2,12 @@ import { Level } from 'level';
 import https from 'https';
 
 export default class Checker {
+  /**
+   * @param {String} dbPath
+   * @param {Number} ipLimit
+   * @param {Number} addressLimit
+   * @param {String} recaptchaSecret
+   */
   constructor(
     dbPath,
     ipLimit,
@@ -33,14 +39,26 @@ export default class Checker {
     });
   }
 
+  /**
+   * @param  {String} ip
+   * @return {Promise<Boolean>}
+   */
   async checkIp(ip) {
     return this.check(ip, this.ipLimit);
   }
 
+  /**
+   * @param  {String} address
+   * @return {Promise<Boolean>}
+   */
   async checkAddress(address) {
     return this.check(address, this.addressLimit);
   }
 
+  /**
+   * @param  {String} key
+   * @return {Promise<void>}
+   */
   async update(key) {
     this.db.get(key, (err, history) => {
       if (err) {
@@ -52,6 +70,10 @@ export default class Checker {
     });
   }
 
+  /**
+   * @param  {{body: {recaptcha: String}, ip: String}} key
+   * @return {Promise<{success: Boolean, score: Number}>}
+   */
   async checkRecaptcha(request) {
     return (new Promise((resolve) => {
       https.get(

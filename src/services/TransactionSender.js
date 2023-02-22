@@ -3,20 +3,30 @@ import { DirectSecp256k1HdWallet } from '@cosmjs/proto-signing';
 import { SigningStargateClient } from '@cosmjs/stargate';
 
 export default class TransactionSender {
+  /**
+   * @param {String} mnemonic
+   * @param {String} senderPrefix
+   * @param {String} rpcEndpoint
+   * @param {String} transactionDenom
+   * @param {Number} transactionAmount
+   * @param {String} feeDenom
+   * @param {Number} feeAmount
+   * @param {Number} feeGas
+   */
   constructor(
     mnemonic,
     senderPrefix,
     rpcEndpoint,
     transactionDenom,
-    transactionAmmount,
+    transactionAmount,
     feeDenom,
-    feeAmmount,
+    feeAmount,
     feeGas,
   ) {
     this.transactionDenom = transactionDenom;
-    this.transactionAmmount = transactionAmmount;
+    this.transactionAmount = transactionAmount;
     this.feeDenom = feeDenom;
-    this.feeAmmount = feeAmmount;
+    this.feeAmount = feeAmount;
     this.feeGas = feeGas;
 
     this.init = (async () => {
@@ -39,19 +49,23 @@ export default class TransactionSender {
     })();
   }
 
+  /**
+   * @param  {String} recipient
+   * @return {Promise<any>}
+   */
   async sendTransaction(recipient) {
     await this.init;
 
     const amount = {
       denom: this.transactionDenom,
-      amount: this.transactionAmmount,
+      amount: this.transactionAmount,
     };
 
     const fee = {
       amount: [
         {
           denom: this.feeDenom,
-          amount: this.feeAmmount,
+          amount: this.feeAmount,
         },
       ],
       gas: this.feeGas,

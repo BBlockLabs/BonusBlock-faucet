@@ -1,9 +1,18 @@
 export default class TransactionController {
+  /**
+   * @param {Checker} checker
+   * @param {TransactionSender} transactionSender
+   */
   constructor(checker, transactionSender) {
     this.checker = checker;
     this.transactionSender = transactionSender;
   }
 
+  /**
+   * @param  {IncomingMessage}
+   * @param  {ServerResponse}
+   * @return {Promise<void>}
+   */
   async sendTransaction(req, res) {
     const { address } = req.params;
 
