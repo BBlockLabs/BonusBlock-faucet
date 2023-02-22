@@ -34,18 +34,18 @@ spec:
         command:
           ['sh', '-c']
         args:
-          ['source /vault/secrets/config && node --es-module-specifier-resolution=node main.js']
+          ['source /vault/secrets/application-env && node --es-module-specifier-resolution=node main.js']
         env:
           {{- toYaml .Values.extraEnv | nindent 10 }}
-      ports:
-      - name: http
-        containerPort: 8000
-        protocol: TCP
-      livenessProbe:
-        httpGet:
-          path: /
-          port: 8000
-      readinessProbe:
-        httpGet:
-          path: /
-          port: 8000
+        ports:
+        - name: http
+          containerPort: 8000
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8000
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8000
