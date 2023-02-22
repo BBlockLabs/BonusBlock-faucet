@@ -1,27 +1,44 @@
 import { Level } from 'level';
 import https from 'https';
 
-const WINDOW = 24 * 60 * 60 * 1000; // milliseconds in a day
-
 export default class Checker {
-  constructor() {
-    this.db = new Level(process.env.DB_PATH, { valueEncoding: 'json' });
+  constructor(
+    dbPath,
+    ipLimit,
+    addressLimit,
+    recaptchaSecret,
+  ) {
+    this.db = new Level(dbPath, { valueEncoding: 'json' });
+    this.ipLimit = ipLimit;
+    this.addressLimit = addressLimit;
+    this.recaptchaSecret = recaptchaSecret;
   }
 
   async check(key, limit) {
     return new Promise((resolve) => {
       this.db.get(key, (err, value) => {
-        resolve(err ? value : value.filter((x) => Date.now() - x < WINDOW).length < limit);
+        if (!err) {
+          resolve(value.length < limit);
+          return;
+        }
+
+        if (err.code === 'LEVEL_NOT_FOUND') {
+          resolve(true);
+          return;
+        }
+
+        console.error(err);
+        resolve(false);
       });
     });
   }
 
   async checkIp(ip) {
-    return this.check(ip, process.env.LIMIT_PER_IP);
+    return this.check(ip, this.ipLimit);
   }
 
   async checkAddress(address) {
-    return this.check(address, process.env.LIMIT_PER_ADDRESS);
+    return this.check(address, this.addressLimit);
   }
 
   async update(key) {
@@ -35,10 +52,10 @@ export default class Checker {
     });
   }
 
-  static async checkRecaptcha(request) {
+  async checkRecaptcha(request) {
     return (new Promise((resolve) => {
       https.get(
-        `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET}&response=${request.body.recaptcha}&remoteip=${request.ip}`,
+        `https://www.google.com/recaptcha/api/siteverify?secret=${this.recaptchaSecret}&response=${request.body.recaptcha}&remoteip=${request.ip}`,
         (res) => {
           let rawData = '';
 
