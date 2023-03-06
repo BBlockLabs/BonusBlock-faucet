@@ -1,7 +1,8 @@
 .env
 /db
 /node_modules
-helm/values.yaml
+helm/values-dev.yaml
+helm/values-prod.yaml
 
 # Various IDEs
 .project
