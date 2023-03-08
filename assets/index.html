@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
+
     <title>Cosmos SDK Blockchain Faucet</title>
 
     <meta name=”robots” content="index, follow">
@@ -18,77 +18,88 @@
   <body>
     <el-container id="app">
       <el-main>
-        <el-space fill>
-          <el-row justify="center"> 
-            <el-col :span=-1>
-              <img src="/logo.svg" alt="Bonus block Faucet">
-            </el-col>
-          </el-row>
+        <el-row justify="center">
+          <el-col :span=-1>
+            <img src="/logo.svg" alt="Bonus block Faucet" height="100">
+          </el-col>
+        </el-row>
 
-          <el-row justify="center">
-            <el-col :span=-1>
-              <h1>Bonus block Faucet</h1>
-            </el-col>          
-          </el-row>
+        <el-row justify="center">
+          <el-col :span=-1>
+            <h1>Bonus block Faucet</h1>
+          </el-col>
+        </el-row>
 
-          <el-row justify="center">
-            <el-col :span=-1>
-              Welcome to our testnet! Are you looking for some tokens to start? 
-            </el-col>
-          </el-row>
+        <el-row justify="center">
+          <el-col :span=-1>
+            Welcome to our testnet! Are you looking for some tokens to start?
+          </el-col>
+        </el-row>
 
-          <el-row>
-            <el-col>
-              <el-form v-loading="loading" @submit.prevent="requestToken">
-                <el-form-item :error="error">
-                  <el-input 
-                    placeholder="Input a wallet address to request token"
-                    v-model="address"
-                  >
-                    <template #append>
-                      <el-button 
-                        type="primary"
-                        @click="requestToken"
-                      >
-                        Send
-                      </el-button>
-                    </template>
-                  </el-input>
-                </el-form-item>
-              </el-form>
-            </el-col>
-          </el-row>
+        <el-row justify="center">
+          <el-col :span=-1>
+            Add BonusBlock address to Keplr wallet:
+            <el-button @click="addToKeplr">Add</el-button>
+          </el-col>
+        </el-row>
 
-          <el-row v-if="response && responseType === 'info'">
-            <el-col>
-              <el-alert 
-                title="Wallet"
-                type="info"
-                :closable="false"
-              >
-                You can check your wallet balance at: 
-                <a 
-                  :href="`https://bonusblock-testnet.alter.network/rest/bank/balances/${address}`" 
-                  target="__blank"
+        <el-row>
+          <el-col>
+            <el-divider />
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col>
+            <el-form v-loading="loading" @submit.prevent="requestToken">
+              <el-form-item :error="error">
+                <el-input
+                  placeholder="Input a wallet address to request token"
+                  v-model="address"
                 >
-                  https://bonusblock-testnet.alter.network/rest/bank/balances/{{ address }}
-                </a>
-              </el-alert>
-            </el-col>
-          </el-row>
+                  <template #append>
+                    <el-button
+                      type="primary"
+                      @click="requestToken"
+                    >
+                      Send
+                    </el-button>
+                  </template>
+                </el-input>
+              </el-form-item>
+            </el-form>
+          </el-col>
+        </el-row>
 
-          <el-row v-if="response">
-            <el-col>
-              <el-alert 
-                title="Response" 
-                :type="responseType"
-                :closable="false"
+        <el-row v-if="response && responseType === 'info'">
+          <el-col>
+            <el-alert
+              title="Wallet"
+              type="info"
+              :closable="false"
+            >
+              You can check your wallet balance at:
+              <a
+                :href="`https://bonusblock-testnet.alter.network/rest/bank/balances/${address}`"
+                target="__blank"
               >
-                <pre>{{ response }}</pre>
-              </el-alert>
-            </el-col>
-          </el-row>
-        </el-space>
+                https://bonusblock-testnet.alter.network/rest/bank/balances/{{ address }}
+              </a>
+            </el-alert>
+          </el-col>
+        </el-row>
+
+        <el-row v-if="response">
+          <el-col>
+            <el-alert
+              title="Response"
+              :type="responseType"
+              :closable="false"
+            >
+              <pre>{{ response }}</pre>
+            </el-alert>
+          </el-col>
+        </el-row>
       </el-main>
     </el-container>
 
@@ -101,7 +112,7 @@
             response: null,
             responseType: null,
             loading: false,
-          }
+          };
         },
         methods: {
           requestToken() {
@@ -141,7 +152,7 @@
           },
           requestTokenRequest(recaptcha) {
             return fetch(
-              `/send/${this.address}`, 
+              `/send/${this.address}`,
               {
                 method: 'POST',
                 headers: {
@@ -150,8 +161,64 @@
                 body: JSON.stringify({recaptcha: recaptcha})
               }
             ).then(response => response.json());
-          }
-        }
+          },
+          addToKeplr() {
+            if (!window.keplr) {
+              ElementPlus.ElMessageBox.alert(
+                'Please enable Keplr plugin and reload the page first.',
+                'Keplr not found'
+              );
+
+              return;
+            }
+
+            window.keplr.experimentalSuggestChain({
+              chainId: "blocktopia-01",
+              chainName: "Bonus block",
+              rpc: "https://bonusblock-testnet.alter.network:443",
+              rest: "https://bonusblock-testnet.alter.network:443/rest",
+              bip44: {
+                coinType: 118,
+              },
+              bech32Config: {
+                  bech32PrefixAccAddr: "bonus",
+                  bech32PrefixAccPub: "bonus" + "pub",
+                  bech32PrefixValAddr: "bonus" + "valoper",
+                  bech32PrefixValPub: "bonus" + "valoperpub",
+                  bech32PrefixConsAddr: "bonus" + "valcons",
+                  bech32PrefixConsPub: "bonus" + "valconspub",
+              },
+              currencies: [
+                {
+                  coinDenom: "BONUS",
+                  coinMinimalDenom: "ubonus",
+                  coinDecimals: 6,
+                  coinGeckoId: "cosmos",
+                },
+              ],
+              feeCurrencies: [
+                {
+                  coinDenom: "BONUS",
+                  coinMinimalDenom: "ubonus",
+                  coinDecimals: 6,
+                  coinGeckoId: "cosmos",
+                  gasPriceStep: {
+                    low: 0.1,
+                    average: 0.25,
+                    high: 1,
+                  },
+                },
+              ],
+              stakeCurrency: {
+                coinDenom: "BONUS",
+                coinMinimalDenom: "ubonus",
+                coinDecimals: 6,
+                coinGeckoId: "cosmos",
+              },
+              features: ["ibc-transfer", "ibc-go", "cosmwasm"],
+            });
+          },
+        },
       });
 
       app.use(ElementPlus);
