@@ -2,6 +2,7 @@
 /db
 /helm
 /node_modules
+package-lock.json
 
 # Various IDEs
 .project
