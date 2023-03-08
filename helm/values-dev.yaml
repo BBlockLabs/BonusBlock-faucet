@@ -14,3 +14,22 @@ podAnnotations:
     export {{ $key }}="{{ $value }}"
     {{- end }}
     {{- end -}}
+
+ingress:
+  enabled: true
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt"
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    external-dns.alpha.kubernetes.io/target: office.altermail.lv
+    external-dns.alpha.kubernetes.io/ttl: "300"
+    traefik.ingress.kubernetes.io/router.middlewares: default-add-reqid@kubernetescrd
+  hosts:
+    - host: bonusblock-faucet.alter.network
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+          backendPort: 8000
+  tls:
+    - secretName: bonusblock-faucet-tls
+      hosts:
+        - bonusblock-faucet.alter.network

@@ -11,7 +11,6 @@ COPY . /code/
 
 ENV PORT=8000
 ENV DB_PATH=./db/faucet.db
-ENV RPC_ENDPOINT=https://bonusblock-testnet.alter.network:443
 ENV SENDER_PREFIX=bonus
 ENV TX_AMOUNT=10000000
 ENV TX_DENOM=ubonus
