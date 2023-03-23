@@ -1,0 +1,35 @@
+fullnameOverride: "bonusblock-faucet"
+podAnnotations:
+  vault.hashicorp.com/agent-inject: "true"
+  vault.hashicorp.com/agent-init-first: "true"
+  vault.hashicorp.com/agent-inject-secret-application-env: "secret/dev-cluster/bonusblock-testnet"
+  vault.hashicorp.com/role: "secrets-read"
+  vault.hashicorp.com/log-level: "debug"
+  vault.hashicorp.com/preserve-secret-case: "true"
+  vault.hashicorp.com/template-static-secret-render-interval: "10s"
+  # Environment variable export template
+  vault.hashicorp.com/agent-inject-template-application-env: |
+    {{- with secret "secret/dev-cluster/bonusblock-testnet" -}}
+    {{- range $key, $value := .Data.data }}
+    export {{ $key }}="{{ $value }}"
+    {{- end }}
+    {{- end -}}
+
+ingress:
+  enabled: true
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt"
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    external-dns.alpha.kubernetes.io/target: office.altermail.lv
+    external-dns.alpha.kubernetes.io/ttl: "300"
+    traefik.ingress.kubernetes.io/router.middlewares: default-add-reqid@kubernetescrd
+  hosts:
+    - host: faucet.bonusblock.io
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+          backendPort: 8000
+  tls:
+    - secretName: bonusblock-faucet-tls
+      hosts:
+        - faucet.bonusblock.io

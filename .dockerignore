@@ -1,0 +1,21 @@
+.env
+/db
+/helm
+/node_modules
+package-lock.json
+
+# Various IDEs
+.project
+.idea/
+*.tmproj
+.vscode/
+.iml
+# Common VCS dirs
+.git/
+.gitignore
+# Common backup files
+*.swp
+*.bak
+*.tmp
+*.orig
+*~

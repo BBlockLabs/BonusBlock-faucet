@@ -1,0 +1,28 @@
+{
+  "name": "BonusBlock faucet",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Faucet for BonusBlock",
+  "main": "main.js",
+  "scripts": {
+    "start": "node --experimental-modules --es-module-specifier-resolution=node main.js",
+    "lint": "eslint --ext .js ./"
+  },
+  "author": "Imants Kaupužs",
+  "license": "MIT",
+  "dependencies": {
+    "@cosmjs/crypto": "^0.29.4",
+    "@cosmjs/proto-signing": "^0.29.4",
+    "@cosmjs/stargate": "^0.29.4",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "level": "^8.0.0",
+    "nodemodule": "^0.3.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.34.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-vue": "^9.9.0"
+  }
+}

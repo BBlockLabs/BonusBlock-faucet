@@ -1,0 +1,16 @@
+fullnameOverride: "bonusblock-faucet"
+podAnnotations:
+  vault.hashicorp.com/agent-inject: "true"
+  vault.hashicorp.com/agent-init-first: "true"
+  vault.hashicorp.com/agent-inject-secret-application-env: "secret/dev-cluster/bonusblock-testnet"
+  vault.hashicorp.com/role: "secrets-read"
+  vault.hashicorp.com/log-level: "debug"
+  vault.hashicorp.com/preserve-secret-case: "true"
+  vault.hashicorp.com/template-static-secret-render-interval: "10s"
+  # Environment variable export template
+  vault.hashicorp.com/agent-inject-template-application-env: |
+    {{- with secret "secret/dev-cluster/bonusblock-testnet" -}}
+    {{- range $key, $value := .Data.data }}
+    export {{ $key }}="{{ $value }}"
+    {{- end }}
+    {{- end -}}

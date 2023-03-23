@@ -1,0 +1,17 @@
+.env
+/db
+/node_modules
+package-lock.json
+
+# Various IDEs
+.project
+.idea/
+*.tmproj
+.vscode/
+.iml
+# Common backup files
+*.swp
+*.bak
+*.tmp
+*.orig
+*~
